@@ -10,9 +10,13 @@ import expenseRoutes from "./routes/expense.routes";
 import goalsRoutes from "./routes/goal.routes";
 import habitsRoutes from "./routes/habit.routes";
 import insightsRouter from "./routes/insight.routes";
+import { connectDB } from "./config/db";
 
 const app = express();
-
+app.use(async (req, res, next) => {
+  await connectDB();
+  next();
+});
 app.use(
   cors({
     origin: "http://localhost:5173",
