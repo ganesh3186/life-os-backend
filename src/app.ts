@@ -23,13 +23,10 @@ app.use(
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
 
-      // allow localhost
-      if (origin === "http://localhost:5173") {
-        return callback(null, true);
-      }
-
-      // allow ALL vercel deployments
-      if (origin.includes(".vercel.app")) {
+      if (
+        origin === "http://localhost:5173" ||
+        origin.includes(".vercel.app")
+      ) {
         return callback(null, true);
       }
 
