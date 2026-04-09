@@ -18,24 +18,22 @@ app.use(async (req, res, next) => {
   next();
 });
 
-const allowedOrigins = [
-  "http://localhost:5173", // local dev
-];
-
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // allow requests with no origin (mobile apps / postman)
+    origin: (origin, callback) => {
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else if (origin.endsWith(".vercel.app")) {
-        // allow ALL vercel preview deployments
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
+      // allow localhost
+      if (origin === "http://localhost:5173") {
+        return callback(null, true);
       }
+
+      // allow ALL vercel deployments
+      if (origin.includes(".vercel.app")) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
   }),
