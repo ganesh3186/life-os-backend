@@ -17,9 +17,30 @@ app.use(async (req, res, next) => {
   await connectDB();
   next();
 });
+
+const allowedOrigins = [
+  "http://localhost:5173", // local dev
+];
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: function (origin, callback) {
+      // allow requests with no origin (like mobile apps / postman)
+      if (!origin) return callback(null, true);
+
+      // allow localhost
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      // ✅ allow all vercel domains
+      if (origin.endsWith(".vercel.app")) {
+        return callback(null, true);
+      }
+
+      // ❌ block others
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   }),
 );
